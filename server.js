@@ -32,7 +32,7 @@ io.use((socket, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     socket.userId = decoded.sub;
-    socket.userEmail = decoded.email;
+    socket.userEmail = decoded.email; //add a user boards to autorize based on rooms id
     console.log(`User connected: ${socket.userId}`);
     next();
   } catch (error) {
