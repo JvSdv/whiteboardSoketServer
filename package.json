@@ -2,7 +2,6 @@
   "name": "whiteboardsoketserver",
   "version": "1.0.0",
   "main": "server.js",
-  "devDependencies": {},
   "author": "",
   "engines": {
     "node": "20.5.1"
@@ -16,7 +15,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
+    "jose": "^5.8.0",
     "socket.io": "^4.7.5"
   }
 }

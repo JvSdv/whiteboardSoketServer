@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
+const { jwtVerify, importJWK } = require('jose');
 require('dotenv').config();
 
 const app = express();
@@ -21,8 +21,7 @@ app.get('/ping', (req, res) => {
   res.send('Pong!');
 });
 
-
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) {
     console.error('Authentication error: Token not provided');
@@ -30,9 +29,12 @@ io.use((socket, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    socket.userId = decoded.sub;
-    socket.userEmail = decoded.email; //add a user boards to autorize based on rooms id
+    const secret = process.env.JWT_SECRET;
+    const key = await importJWK({ kty: 'oct', k: secret }, 'HS256');
+    const { payload } = await jwtVerify(token, key);
+    
+    socket.userId = payload.sub;
+    socket.userEmail = payload.email;
     console.log(`User connected: ${socket.userId}`);
     next();
   } catch (error) {
